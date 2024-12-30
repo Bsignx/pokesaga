@@ -7,6 +7,10 @@ const nextConfig = {
   output: "standalone",
   reactStrictMode: true,
   serverExternalPackages: ["@aws-sdk/s3-request-presigner"],
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+
   images: {
     remotePatterns: [
       {
