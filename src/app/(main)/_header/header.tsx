@@ -32,15 +32,16 @@ export async function Header() {
         <div className="flex justify-between gap-10 items-center">
           <Link href="/" className="flex items-center gap-2">
             <Image
-              src="/group.jpeg"
-              alt="Group Finder Logo"
-              width={40}
-              height={40}
-              className="rounded-full"
+              src="/logo.png"
+              alt="Logo do Pokesaga"
+              width={500}
+              height={500}
+              className="w-[210px] h-[50px]"
+              // className="rounded-full"
             />
-            <span className="text-sm md:text-base lg:text-2xl font-bold">
+            {/* <span className="text-sm md:text-base lg:text-2xl font-bold">
               {applicationName}
-            </span>
+            </span> */}
           </Link>
 
           <HeaderLinks isAuthenticated={!!user} />
@@ -99,7 +100,7 @@ async function HeaderActions() {
                   href="/dashboard/settings"
                   className="flex gap-2 items-center cursor-pointer"
                 >
-                  <Settings2Icon className="w-4 h-4" /> Settings
+                  <Settings2Icon className="w-4 h-4" /> Configurações
                 </Link>
               </DropdownMenuItem>
               <SignOutItem />
@@ -113,7 +114,7 @@ async function HeaderActions() {
       ) : (
         <>
           <Button asChild variant="secondary">
-            <Link href="/sign-in">Sign In</Link>
+            <Link href="/sign-in">Entrar</Link>
           </Button>
         </>
       )}

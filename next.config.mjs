@@ -4,12 +4,12 @@ const withMDX = createMDX();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "standalone",
+  // output: "standalone",
   reactStrictMode: true,
   serverExternalPackages: ["@aws-sdk/s3-request-presigner"],
-  typescript: {
-    ignoreBuildErrors: true,
-  },
+  // typescript: {
+  //   ignoreBuildErrors: true,
+  // },
 
   images: {
     remotePatterns: [

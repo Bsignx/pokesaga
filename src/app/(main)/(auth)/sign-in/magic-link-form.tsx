@@ -66,7 +66,7 @@ export function MagicLinkForm() {
           )}
         />
         <LoaderButton isLoading={isPending} className="w-full" type="submit">
-          Sign in with magic link
+          Entrar com link mágico
         </LoaderButton>
       </form>
     </Form>

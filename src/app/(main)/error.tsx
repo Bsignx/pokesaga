@@ -18,16 +18,18 @@ export default function ErrorPage({
     <div className="container mx-auto py-12 min-h-screen space-y-8">
       {isAuthenticationError ? (
         <>
-          <h1 className={pageTitleStyles}>Oops! You Need to Be Logged In</h1>
-          <p className="text-lg">To access this page, please log in first.</p>
+          <h1 className={pageTitleStyles}>Ops! Você Precisa Estar Logado</h1>
+          <p className="text-lg">
+            Para acessar esta página, faça login primeiro.
+          </p>
 
           <Button asChild>
-            <Link href="/sign-in">Sign In</Link>
+            <Link href="/sign-in">Entrar</Link>
           </Button>
         </>
       ) : (
         <>
-          <h1 className={pageTitleStyles}>Oops! Something went wrong</h1>
+          <h1 className={pageTitleStyles}>Ops! Algo deu errado</h1>
           <p className="text-lg">{error.message}</p>
         </>
       )}

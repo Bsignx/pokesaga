@@ -100,7 +100,7 @@ export function ConditionalHeader({
                       href="/dashboard/settings"
                       className="flex gap-2 items-center"
                     >
-                      <Settings2Icon className="w-4 h-4" /> Settings
+                      <Settings2Icon className="w-4 h-4" /> Configurações
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
@@ -108,7 +108,7 @@ export function ConditionalHeader({
                       href="/api/auth/signout?callbackUrl=/"
                       className="flex gap-2 items-center"
                     >
-                      <LogOut className="w-4 h-4" /> Sign Out
+                      <LogOut className="w-4 h-4" /> Sair
                     </Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -117,7 +117,7 @@ export function ConditionalHeader({
           ) : (
             <>
               <Button asChild variant="secondary">
-                <Link href="/api/auth/signin/google">Sign In</Link>
+                <Link href="/api/auth/signin/google">Entrar</Link>
               </Button>
             </>
           )}

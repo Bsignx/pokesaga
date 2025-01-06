@@ -16,6 +16,7 @@ import {
 
 import { env } from "@/env";
 import { applicationName } from "@/app-config";
+import { getCurrentYear } from "@/util/date";
 
 export const BASE_URL = env.HOST_NAME;
 
@@ -57,7 +58,7 @@ export function ResetPasswordEmail({ token }: { token: string }) {
               <Hr className="border border-solid border-[#eaeaea] my-[26px] mx-0 w-full" />
 
               <Text className="text-[#666666] text-[12px] leading-[24px] flex items-center justify-center">
-                © 2024 {applicationName}. All rights reserved.
+                © {getCurrentYear()} {applicationName}. All rights reserved.
               </Text>
             </Container>
           </Body>

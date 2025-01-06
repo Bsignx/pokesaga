@@ -3,6 +3,7 @@ import {
   boolean,
   index,
   integer,
+  jsonb,
   pgEnum,
   pgTable,
   serial,
@@ -32,12 +33,9 @@ export const accounts = pgTable(
     password: text("password"),
     salt: text("salt"),
   },
-  (table) => ({
-    userIdAccountTypeIdx: index("user_id_account_type_idx").on(
-      table.userId,
-      table.accountType
-    ),
-  })
+  (table) => [
+    index("user_id_account_type_idx").on(table.userId, table.accountType),
+  ]
 );
 
 export const magicLinks = pgTable(
@@ -48,9 +46,7 @@ export const magicLinks = pgTable(
     token: text("token"),
     tokenExpiresAt: timestamp("tokenExpiresAt", { mode: "date" }),
   },
-  (table) => ({
-    tokenIdx: index("magic_links_token_idx").on(table.token),
-  })
+  (table) => [index("magic_links_token_idx").on(table.token)]
 );
 
 export const resetTokens = pgTable(
@@ -64,9 +60,7 @@ export const resetTokens = pgTable(
     token: text("token"),
     tokenExpiresAt: timestamp("tokenExpiresAt", { mode: "date" }),
   },
-  (table) => ({
-    tokenIdx: index("reset_tokens_token_idx").on(table.token),
-  })
+  (table) => [index("reset_tokens_token_idx").on(table.token)]
 );
 
 export const verifyEmailTokens = pgTable(
@@ -80,9 +74,7 @@ export const verifyEmailTokens = pgTable(
     token: text("token"),
     tokenExpiresAt: timestamp("tokenExpiresAt", { mode: "date" }),
   },
-  (table) => ({
-    tokenIdx: index("verify_email_tokens_token_idx").on(table.token),
-  })
+  (table) => [index("verify_email_tokens_token_idx").on(table.token)]
 );
 
 export const profiles = pgTable("gf_profile", {
@@ -109,9 +101,7 @@ export const sessions = pgTable(
       mode: "date",
     }).notNull(),
   },
-  (table) => ({
-    userIdIdx: index("sessions_user_id_idx").on(table.userId),
-  })
+  (table) => [index("sessions_user_id_idx").on(table.userId)]
 );
 
 export const subscriptions = pgTable(
@@ -127,12 +117,85 @@ export const subscriptions = pgTable(
     stripePriceId: text("stripePriceId").notNull(),
     stripeCurrentPeriodEnd: timestamp("expires", { mode: "date" }).notNull(),
   },
-  (table) => ({
-    stripeSubscriptionIdIdx: index(
-      "subscriptions_stripe_subscription_id_idx"
-    ).on(table.stripeSubscriptionId),
+  (table) => [
+    index("subscriptions_stripe_subscription_id_idx").on(
+      table.stripeSubscriptionId
+    ),
+  ]
+);
+
+// Add your own tables here
+
+// Table: pokemon_sets
+export const pokemonSets = pgTable("pokemon_sets", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(), // e.g., "Surging Sparks"
+  description: text("description"), // Optional description
+  releaseDate: timestamp("release_date"), // Optional release date of the set
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const pokemonSetsRelations = relations(pokemonSets, ({ many }) => ({
+  cards: many(cards),
+}));
+
+// Table: cards
+export const cards = pgTable("cards", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  setName: text("set_name"), // Additional set details
+  cardNumber: text("card_number"),
+  rarity: text("rarity"),
+  type: text("type"),
+  imageUrl: text("image_url"),
+  setId: integer("set_id")
+    .notNull()
+    .references(() => pokemonSets.id), // Links to a Pokémon set
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const cardsRelations = relations(cards, ({ one, many }) => ({
+  pokemonSet: one(pokemonSets, {
+    fields: [cards.setId],
+    references: [pokemonSets.id],
+  }),
+  userCollections: many(userCollections),
+}));
+
+export const usersRelations = relations(users, ({ many }) => ({
+  userCollections: many(userCollections),
+}));
+
+// Table: user_collections
+export const userCollections = pgTable("user_collections", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id), // Links to a user
+  cardId: integer("card_id")
+    .notNull()
+    .references(() => cards.id), // Links to a card
+  quantity: integer("quantity").notNull().default(1), // Number of this card in the user’s collection
+  customTags: jsonb("custom_tags"), // Optional tags for the card
+  notes: text("notes"), // Optional user notes about the card
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const userCollectionsRelations = relations(
+  userCollections,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [userCollections.userId],
+      references: [users.id],
+    }),
+    card: one(cards, {
+      fields: [userCollections.cardId],
+      references: [cards.id],
+    }),
   })
 );
+
+// delete this after you have added your own tables, this is just an example
 
 export const following = pgTable(
   "gf_following",
@@ -145,12 +208,12 @@ export const following = pgTable(
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
   },
-  (table) => ({
-    userIdForeignUserIdIdx: index("following_user_id_foreign_user_id_idx").on(
+  (table) => [
+    index("following_user_id_foreign_user_id_idx").on(
       table.userId,
       table.foreignUserId
     ),
-  })
+  ]
 );
 
 /**
@@ -181,12 +244,9 @@ export const groups = pgTable(
     githubLink: text("githubLink").default(""),
     xLink: text("xLink").default(""),
   },
-  (table) => ({
-    userIdIsPublicIdx: index("groups_user_id_is_public_idx").on(
-      table.userId,
-      table.isPublic
-    ),
-  })
+  (table) => [
+    index("groups_user_id_is_public_idx").on(table.userId, table.isPublic),
+  ]
 );
 
 export const memberships = pgTable(
@@ -201,12 +261,9 @@ export const memberships = pgTable(
       .references(() => groups.id, { onDelete: "cascade" }),
     role: roleEnum("role").default("member"),
   },
-  (table) => ({
-    userIdGroupIdIdx: index("memberships_user_id_group_id_idx").on(
-      table.userId,
-      table.groupId
-    ),
-  })
+  (table) => [
+    index("memberships_user_id_group_id_idx").on(table.userId, table.groupId),
+  ]
 );
 
 export const invites = pgTable("gf_invites", {
@@ -276,9 +333,7 @@ export const reply = pgTable(
     message: text("message").notNull(),
     createdOn: timestamp("createdOn", { mode: "date" }).notNull(),
   },
-  (table) => ({
-    postIdIdx: index("replies_post_id_idx").on(table.postId),
-  })
+  (table) => [index("replies_post_id_idx").on(table.postId)]
 );
 
 /**

@@ -35,15 +35,15 @@ export default function SignInPage() {
   const { execute, isPending, error, reset } = useServerAction(signInAction, {
     onError({ err }) {
       toast({
-        title: "Something went wrong",
+        title: "Algo deu errado",
         description: err.message,
         variant: "destructive",
       });
     },
     onSuccess() {
       toast({
-        title: "Let's Go!",
-        description: "Enjoy your session",
+        title: "Vamos lá!",
+        description: "Aproveite sua sessão",
       });
     },
   });
@@ -62,7 +62,7 @@ export default function SignInPage() {
 
   return (
     <div className="py-24 mx-auto max-w-[400px] space-y-6">
-      <h1 className={cn(pageTitleStyles, "text-center")}>Sign In</h1>
+      <h1 className={cn(pageTitleStyles, "text-center")}>Entrar</h1>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -76,7 +76,7 @@ export default function SignInPage() {
                   <Input
                     {...field}
                     className="w-full"
-                    placeholder="Enter your email"
+                    placeholder="Digite seu email"
                     type="email"
                   />
                 </FormControl>
@@ -90,12 +90,12 @@ export default function SignInPage() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>Senha</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     className="w-full"
-                    placeholder="Enter your password"
+                    placeholder="Digite sua senha"
                     type="password"
                   />
                 </FormControl>
@@ -107,20 +107,20 @@ export default function SignInPage() {
           {error && (
             <Alert variant="destructive">
               <Terminal className="h-4 w-4" />
-              <AlertTitle>Uh-oh, we couldn&apos;t log you in</AlertTitle>
+              <AlertTitle>Ops, não conseguimos fazer seu login</AlertTitle>
               <AlertDescription>{error.message}</AlertDescription>
             </Alert>
           )}
 
           <LoaderButton isLoading={isPending} className="w-full" type="submit">
-            Sign In
+            Entrar
           </LoaderButton>
         </form>
       </Form>
 
       <div className="flex justify-center">
         <Button asChild variant="link">
-          <Link href="/sign-in/forgot-password">Forgot Password</Link>
+          <Link href="/sign-in/forgot-password">Esqueceu a senha?</Link>
         </Button>
       </div>
 
@@ -130,13 +130,13 @@ export default function SignInPage() {
         </div>
         <div className="relative flex justify-center text-xs uppercase">
           <span className="bg-gray-100 px-2 text-gray-500 dark:bg-gray-950 dark:text-gray-400">
-            Or
+            Ou
           </span>
         </div>
       </div>
 
       <Button className="w-full" variant={"secondary"}>
-        <Link href="/sign-up">Create an account</Link>
+        <Link href="/sign-up">Criar uma conta</Link>
       </Button>
     </div>
   );

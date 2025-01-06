@@ -1,6 +1,7 @@
 import { applicationName, companyName } from "@/app-config";
 import Link from "next/link";
 import { ModeToggle } from "@/components/mode-toggle";
+import { getCurrentYear } from "@/util/date";
 
 export function Footer() {
   return (
@@ -10,12 +11,12 @@ export function Footer() {
           <div className="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-3">
             <div>
               <h3 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">
-                Company
+                Empresa
               </h3>
             </div>
             <div>
               <h3 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">
-                Help center
+                Central de Ajuda
               </h3>
               <ul className="text-gray-500 dark:text-gray-400">
                 <li className="mb-4">
@@ -32,12 +33,12 @@ export function Footer() {
               <ul className="text-gray-500 dark:text-gray-400">
                 <li className="mb-4">
                   <Link href="/privacy" className="hover:underline">
-                    Privacy Policy
+                    Política de Privacidade
                   </Link>
                 </li>
                 <li className="mb-4">
                   <Link href="/terms-of-service" className="hover:underline">
-                    Terms of Service
+                    Termos de Serviço
                   </Link>
                 </li>
               </ul>
@@ -51,8 +52,8 @@ export function Footer() {
       <footer className="py-8 px-5 border-t">
         <div className="text-center">
           <span className="block text-sm text-center text-gray-500 dark:text-gray-400">
-            © 2024 <Link href="/">{applicationName}</Link>. All Rights Reserved.
-            Built with ❤️ by {companyName}
+            © {getCurrentYear()} <Link href="/">{applicationName}</Link>. Todos
+            os direitos reservados. Feito com ❤️ por {companyName}
           </span>
         </div>
       </footer>

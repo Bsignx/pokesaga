@@ -1,7 +1,14 @@
 import "dotenv/config";
 
 import { database, pg } from "./index";
-import { accounts, groups, profiles, users } from "@/db/schema";
+import {
+  accounts,
+  cards,
+  pokemonSets,
+  profiles,
+  userCollections,
+  users,
+} from "@/db/schema";
 
 async function main() {
   const [user] = await database
@@ -36,15 +43,80 @@ async function main() {
     .onConflictDoNothing()
     .returning();
 
-  const [group] = await database
-    .insert(groups)
-    .values({
-      name: "Test Group",
-      description: "This is a test group",
-      isPublic: true,
-      userId: user.id,
-    })
+  const sets = await database
+    .insert(pokemonSets)
+    .values([
+      {
+        name: "Surging Sparks",
+        description:
+          "A collection featuring electric-type Pokémon with dazzling abilities.",
+        releaseDate: new Date("2023-01-15"),
+      },
+      {
+        name: "Mystic Shadows",
+        description: "A set that explores the mysterious and shadowy Pokémon.",
+        releaseDate: new Date("2023-06-20"),
+      },
+    ])
+    .onConflictDoNothing()
     .returning();
+
+  const cardsData = await database
+    .insert(cards)
+    .values([
+      {
+        name: "Pikachu",
+        setName: "Surging Sparks",
+        cardNumber: "SS001",
+        rarity: "Rare",
+        type: "Electric",
+        imageUrl: "https://example.com/images/pikachu.jpg",
+        setId: sets[0].id,
+      },
+      {
+        name: "Gengar",
+        setName: "Mystic Shadows",
+        cardNumber: "MS002",
+        rarity: "Ultra Rare",
+        type: "Ghost",
+        imageUrl: "https://example.com/images/gengar.jpg",
+        setId: sets[1].id,
+      },
+      {
+        name: "Zapdos",
+        setName: "Surging Sparks",
+        cardNumber: "SS003",
+        rarity: "Legendary",
+        type: "Electric/Flying",
+        imageUrl: "https://example.com/images/zapdos.jpg",
+        setId: sets[0].id,
+      },
+    ])
+    .returning();
+
+  await database.insert(userCollections).values([
+    {
+      userId: user.id,
+      cardId: cardsData[0].id,
+      quantity: 2,
+      customTags: [{ tag: "favorite", reason: "First Pokémon" }],
+      notes: "This card is iconic!",
+    },
+    {
+      userId: user.id,
+      cardId: cardsData[1].id,
+      quantity: 1,
+      customTags: [{ tag: "trade", priority: 1 }],
+      notes: "Looking to trade this rare card.",
+    },
+    {
+      userId: user.id,
+      cardId: cardsData[2].id,
+      quantity: 3,
+      customTags: [{ tag: "legendary", value: true }],
+      notes: "A powerful addition to my collection!",
+    },
+  ]);
 
   await pg.end();
 }
