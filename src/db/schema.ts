@@ -131,8 +131,11 @@ export const pokemonSets = pgTable("pokemon_sets", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(), // e.g., "Surging Sparks"
   description: text("description"), // Optional description
+  code: text("code"), // Optional code for the set
+  setHref: text("set_href"), // Optional URL for the set
   releaseDate: timestamp("release_date"), // Optional release date of the set
   createdAt: timestamp("created_at").defaultNow(),
+  imageUrl: text("image_url"), // Optional image URL for the set
 });
 
 export const pokemonSetsRelations = relations(pokemonSets, ({ many }) => ({
@@ -143,10 +146,12 @@ export const pokemonSetsRelations = relations(pokemonSets, ({ many }) => ({
 export const cards = pgTable("cards", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
+  englishName: text("english_name"), // Optional English name
   setName: text("set_name"), // Additional set details
   cardNumber: text("card_number"),
   rarity: text("rarity"),
   type: text("type"),
+  subtype: text("subtype"),
   imageUrl: text("image_url"),
   setId: integer("set_id")
     .notNull()
@@ -194,6 +199,17 @@ export const userCollectionsRelations = relations(
     }),
   })
 );
+
+// remove createdAt and id from the $inferSelect type
+export type PokemonSet = Omit<
+  typeof pokemonSets.$inferSelect,
+  "createdAt" | "id"
+>;
+export type Card = Omit<typeof cards.$inferSelect, "createdAt" | "id">;
+export type UserCollection = Omit<
+  typeof userCollections.$inferSelect,
+  "createdAt" | "id"
+>;
 
 // delete this after you have added your own tables, this is just an example
 

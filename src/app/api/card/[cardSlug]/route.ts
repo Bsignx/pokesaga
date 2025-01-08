@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { scrapeCardPrice } from "@/lib/scraper";
-import { getCachedPrice, setCachedPrice } from "@/lib/cache";
 
 export async function GET(
   request: Request,
@@ -12,24 +11,10 @@ export async function GET(
     return NextResponse.json({ error: "Invalid card slug" }, { status: 400 });
   }
 
-  // Check cache first
-  let cachedPrice = getCachedPrice(cardSlug);
-  console.log({ cachedPrice });
-  if (cachedPrice !== null) {
-    return NextResponse.json({
-      cardSlug,
-      priceData: cachedPrice,
-      source: "cache",
-    });
-  }
+  const price = await scrapeCardPrice(cardSlug);
 
-  // Scrape price if not cached
-  const priceData = await scrapeCardPrice(cardSlug);
-  console.log({ priceData });
-  if (priceData !== null) {
-    // Cache the scraped price data for 24 hours
-    setCachedPrice(cardSlug, priceData);
-    return NextResponse.json({ cardSlug, priceData, source: "scraped" });
+  if (price !== null) {
+    return NextResponse.json({ success: true, price }, { status: 200 });
   }
 
   return NextResponse.json({ error: "Price not found" }, { status: 404 });
